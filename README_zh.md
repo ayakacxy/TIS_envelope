@@ -110,7 +110,8 @@ print("Envelope shape:", envelope.shape) # Output shape should be (N,)
 ├── numpy_jax_comparison.pdf      # CPU上的性能差异可视化图
 ├── jax_pytorch_comparison.pdf    # GPU上的性能差异可视化图
 ├── numpy_jax_comparison.png      # CPU上的性能差异可视化图
-└── jax_pytorch_comparison.png    # GPU上的性能差异可视化图
+├── jax_pytorch_comparison.png    # GPU上的性能差异可视化图
+└── LICENSE
 ```
 
 

@@ -113,7 +113,8 @@ print("Envelope shape:", envelope.shape) # Output shape should be (N,)
 ├── numpy_jax_comparison.pdf      # Performance difference visualization plot on CPU
 ├── jax_pytorch_comparison.pdf    # Performance difference visualization plot on GPU
 ├── numpy_jax_comparison.png      # Performance difference visualization plot on CPU
-└── jax_pytorch_comparison.png    # Performance difference visualization plot on GPU
+├── jax_pytorch_comparison.png    # Performance difference visualization plot on GPU
+└── LICENSE
 ```
 
 
