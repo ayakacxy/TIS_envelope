@@ -19,6 +19,7 @@
 
 *   **高效计算：** 基于 JAX 实现，通过 JIT 编译和硬件加速（CPU/GPU），显著提升包络场计算速度。
 *   **公式实现：** 实现了时域干涉刺激中用于计算任意方向包络场最大值的公式，适用于处理电场矢量。
+
 $$
 \begin{equation}
 	\left| \vec{E}_{AM}(\vec{r}) \right| =
@@ -29,6 +30,7 @@ $$
 	\end{cases}
 \end{equation}
 $$
+
 其中$\alpha$表示$\vec{E}_1(\vec{r})$和$\vec{E}_2(\vec{r})$之间的夹角。且公式仅在$\alpha <\dfrac{\pi}{2}$，且$\left|\vec{E}_1(\vec{r})\right|>\left|\vec{E}_2(\vec{r})\right|$时成立，否则，就需要将$\vec{E}_2(\vec{r})$反转，并和$\vec{E}_1(\vec{r})$交换.
 *   **易于集成：** 可作为一个独立的计算函数，方便集成到其他 TIS 模拟或优化框架中。
 
