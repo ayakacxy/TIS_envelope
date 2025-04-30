@@ -81,7 +81,7 @@ Function Call Example:
 import jax
 import jax.numpy as jnp
 import numpy as np
-from env_jax import envelop_jax 
+from env_jax import envelop_jax
 
 
 N = 10
@@ -98,8 +98,7 @@ envelope = envelop_jax(E1_jax, E2_jax)
 
 print("E1 shape:", E1_jax.shape)
 print("E2 shape:", E2_jax.shape)
-print("Envelope shape:", envelope_jax.shape) # Output shape should be (N,)
-print("Envelope values:", envelope_np) # Note: Kept envelope_np as in the original, though 'envelope' was calculated.
+print("Envelope shape:", envelope.shape) # Output shape should be (N,)
 ```
 
 ## Code Structure

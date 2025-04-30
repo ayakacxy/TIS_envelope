@@ -79,25 +79,24 @@ $$
 import jax
 import jax.numpy as jnp
 import numpy as np
-from env_jax import envelop_jax 
+from env_jax import envelop_jax
 
 
 N = 10
 key = jax.random.PRNGKey(0)
-E1_np = np.random.rand(N, 3) * 0.1  # 示例Numpy数组
+E1_np = np.random.rand(N, 3) * 0.1  # Example NumPy array
 E2_np = np.random.rand(N, 3) * 0.1
 
-#将Numpy数组转成成JAX数组，以启用JAX加速
+# Convert NumPy arrays to JAX arrays to enable JAX acceleration
 E1_jax = jnp.array(E1_np)
 E2_jax = jnp.array(E2_np)
 
-# 求解干涉包络
+# Solve for the interference envelope
 envelope = envelop_jax(E1_jax, E2_jax)
 
 print("E1 shape:", E1_jax.shape)
 print("E2 shape:", E2_jax.shape)
-print("Envelope shape:", envelope_jax.shape) # 输出形状应该为(N,)
-print("Envelope values:", envelope_np)
+print("Envelope shape:", envelope.shape) # Output shape should be (N,)
 ```
 ## 代码结构
 
