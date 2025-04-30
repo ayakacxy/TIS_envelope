@@ -103,6 +103,7 @@ print("Envelope values:", envelope_np) # Note: Kept envelope_np as in the origin
 ```
 
 ## Code Structure
+
 ```
 .
 ├── env_jax.py                    # Core function file for solving the envelope field
@@ -119,8 +120,11 @@ print("Envelope values:", envelope_np) # Note: Kept envelope_np as in the origin
 ## Performance 
 The JAX-accelerated solver implemented in this module demonstrates significant performance advantages over implementations based on NumPy or PyTorch on both CPU and GPU, with computation speed increased by nearly an order of magnitude, especially suitable for large-scale voxel calculations.
 ### CPU Acceleration Performance
+
 ![CPU Acceleration Performance](numpy_jax_comparison.png "CPU Acceleration Performance")
+
 ### GPU Acceleration Performance
+
 ![GPU Acceleration Performance](jax_pytorch_comparison.png "GPU Acceleration Performance")
 
 ## Contributing 

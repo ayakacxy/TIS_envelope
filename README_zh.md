@@ -100,6 +100,7 @@ print("Envelope shape:", envelope_jax.shape) # 输出形状应该为(N,)
 print("Envelope values:", envelope_np)
 ```
 ## 代码结构
+
 ```
 .
 ├── env_jax.py                    # 求解包络场的核心函数文件
@@ -114,10 +115,15 @@ print("Envelope values:", envelope_np)
 
 
 ## 性能 
+
 本模块实现的 JAX 加速求解器在 CPU 和 GPU 上均比基于 NumPy 或 PyTorch 的实现展现出显著的性能优势，计算速度提升接近一个数量级，尤其适用于大规模体素计算。
+
 ### CPU加速性能
+
 ![CPU加速性能](numpy_jax_comparison.png "CPU加速性能")
+
 ### GPU加速性能
+
 ![GPU加速性能](jax_pytorch_comparison.png "GPU加速性能")
 
 ## 贡献 
