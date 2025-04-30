@@ -20,6 +20,7 @@ This code is the implementation of the high-performance computing module from th
 
 *   **High Efficiency:** Based on JAX, significantly improves envelope field calculation speed through JIT compilation and hardware acceleration (CPU/GPU).
 *   **Formula Implementation:** Implements the formula used in temporal interference stimulation to calculate the maximum value of the envelope field in any direction, suitable for processing electric field vectors.
+
 $$
 \begin{equation}
 	\left| \vec{E}_{AM}(\vec{r}) \right| =
@@ -30,6 +31,7 @@ $$
 	\end{cases}
 \end{equation}
 $$
+
 Where $\alpha$ represents the angle between $\vec{E}_1(\vec{r})$ and $\vec{E}_2(\vec{r})$. This formula is valid only when $\alpha < \frac{\pi}{2}$ and $|\vec{E}_1(\vec{r})| > |\vec{E}_2(\vec{r})|$. Otherwise, $\vec{E}_2(\vec{r})$ needs to be reversed and swapped with $\vec{E}_1(\vec{r})$.
 *   **Easy Integration:** Can be used as a standalone computation function, convenient for integration into other TIS simulation or optimization frameworks.
 
