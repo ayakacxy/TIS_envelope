@@ -106,6 +106,7 @@ print("Envelope shape:", envelope.shape) # Output shape should be (N,)
 ├── Benchmark_cpu.py              # 在CPU上JAX和Numpy的性能对比脚本
 ├── Benchmark_cpu.py              # 在GPU上JAX和PyTorch的性能对比脚本
 ├── README.md                     # 本文件
+├── test.py                       # 测试代码
 ├── numpy_jax_comparison.pdf      # CPU上的性能差异可视化图
 ├── jax_pytorch_comparison.pdf    # GPU上的性能差异可视化图
 ├── numpy_jax_comparison.png      # CPU上的性能差异可视化图
