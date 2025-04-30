@@ -1,24 +1,25 @@
-# High-Performance JAX-based Solver for Temporal Interference Stimulation Envelope Electric Fields
+# High-Performance Temporal Interference Stimulation Envelope Solver Module based on JAX
 
-## Project Description
-This repository provides a high-performance computational module based on the `JAX` framework for rapidly calculating the Temporal Interference Stimulation (TIS) envelope electric field distribution. The calculation of the envelope field is a major computational bottleneck in TIS simulation and optimization, especially in detailed models involving a large number of voxels.
+This project provides a high-performance computing module based on the `JAX` framework for rapidly solving the envelope field distribution of Temporal Interference Stimulation (TIS).
 
-This module leverages JAX's `Just-In-Time (JIT)` compilation and vectorization strategies, among other optimizations, to significantly accelerate the envelope field calculation speed. It is suitable for accelerating TIS-based neuromodulation simulations, parameter optimizations, and other related research.
+Temporal interference technology generates a low-frequency envelope at the difference frequency by superimposing high-frequency currents, which is used to achieve non-invasive focused stimulation of deep brain regions. The calculation of the envelope field is a major computational bottleneck in TIS simulation and optimization, especially in fine models requiring the processing of a large number of voxels.
 
-## Associated Publication
-This code is the implementation of the high-performance computational module described in the following research paper:
+This module utilizes `JAX`'s optimization strategies such as `Just-In-Time (JIT)` compilation and vectorization to significantly improve the speed of envelope field calculation, and can be used to accelerate research work such as TIS-based neuromodulation simulation and parameter optimization.
+
+## Related Research Paper
+
+This code is the implementation of the high-performance computing module from the following research paper:
 
 **"Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning"**
 *Xiayu Chen, Wennan Chan, Yingqiang Meng, Runze Liu, Yueyi Yu, Sheng Hu, Jijun Han, Xiaoxiao Wang, Jiawei Zhou, Bensheng Qiu, Yanming Wang*
-[Link to Paper (e.g., arXiv or journal page)]
+[Paper Link (e.g., arXiv or journal page)]
 
-*Please cite our paper if you use this code in your research.*
+*If you use this code in your research, please cite our paper.*
 
-## 功能与特性
+## Features
 
-*   **高效计算：** 基于 JAX 实现，通过 JIT 编译和硬件加速（CPU/GPU），显著提升包络场计算速度。
-*   **公式实现：** 实现了论文中用于计算任意方向包络场最大值的公式（参考论文公式 (4)），适用于处理电场矢量。
-
+*   **High Efficiency:** Based on JAX, significantly improves envelope field calculation speed through JIT compilation and hardware acceleration (CPU/GPU).
+*   **Formula Implementation:** Implements the formula used in temporal interference stimulation to calculate the maximum value of the envelope field in any direction, suitable for processing electric field vectors.
 $$
 \begin{equation}
 	\left| \vec{E}_{AM}(\vec{r}) \right| =
@@ -29,63 +30,51 @@ $$
 	\end{cases}
 \end{equation}
 $$
-*   **Easy Integration:**  Can be used as an independent computational function, easily integrated into other TIS simulation or optimization frameworks.
+Where $\alpha$ represents the angle between $\vec{E}_1(\vec{r})$ and $\vec{E}_2(\vec{r})$. This formula is valid only when $\alpha < \frac{\pi}{2}$ and $|\vec{E}_1(\vec{r})| > |\vec{E}_2(\vec{r})|$. Otherwise, $\vec{E}_2(\vec{r})$ needs to be reversed and swapped with $\vec{E}_1(\vec{r})$.
+*   **Easy Integration:** Can be used as a standalone computation function, convenient for integration into other TIS simulation or optimization frameworks.
 
-## Requirements
+## Environment Requirements
 
-*   Python 3.8+
-*   JAX and JAXlib (requires installing the appropriate backend for your hardware, supporting CPU and GPU acceleration)
+*   Python 3.9+
+*   JAX and JAXlib (Requires selecting the appropriate backend for installation based on your hardware, supports CPU and GPU acceleration)
 *   NumPy
 
-## 安装 / Installation
+## Installation
 
-1.  **克隆代码库 / Clone the repository:**
+1.  **Clone the repository**
     ```bash
     git clone https://github.com/ayakacxy/TIS_envelope.git
     cd TIS_envelope
     ```
 
-2.  **安装依赖 / Install dependencies:**
-    You need to install JAX, JAXlib, and NumPy. It is recommended to create and activate a Python virtual environment.
+2.  **Install dependencies**
     ```bash
-    ### 创建虚拟环境
-    python -m venv .venv
+    ### Create virtual environment
     conda create -n envelop_solve python=3.9
 
-    # 安装 JAX (CPU版本) / Install JAX (CPU version)
+    # Install JAX (CPU version)
     pip install -U jax
 
-    # 如果您有 CUDA GPU，建议安装 GPU 版本以获得最佳性能
-    # 请根据您的 CUDA 版本参考 JAX 官方文档选择对应的 jaxlib 版本安装:https://docs.jax.dev/en/latest/installation.html
-    # 例如 (以 CUDA 12 为例):
+    # If you have a CUDA GPU, it is recommended to install the GPU version for optimal performance
+    # Please refer to the official JAX documentation to select the corresponding jaxlib version for your CUDA version
+    # https://docs.jax.dev/en/latest/installation.html
+    # Example (for CUDA 12):
     pip install -U "jax[cuda12]"
-
-    # If you have a CUDA GPU, installing the GPU version is recommended for best performance
-    # Please refer to the official JAX documentation to select the jaxlib version corresponding to your CUDA version
-    # For example (for CUDA 12):
-    # pip install jax jaxlib[cuda12_pip] -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-
     ```
-    *请务必参考 JAX 官方安装指南，确保安装的 JAXlib 版本与您的 CUDA 版本兼容。* / 
+    *Please be sure to refer to the official JAX installation guide to ensure the installed JAXlib version is compatible with your CUDA version.*
+    Also, it is currently tested that `torch==2.6.0` and `jax=0.6.0` are compatible under `cuda=12.2`. Although `jax`'s `cudnn` version is higher, running it concurrently with `torch` does not cause issues. **The GPU version of JAX currently cannot run on Windows, please refer to the official JAX documentation [JAX](https://docs.jax.dev/en/latest/) for details.**
 
-## 使用方法 / Usage
+## Usage
 
-本模块的核心功能是一个函数，它接收两个电场张量作为输入，并返回对应的包络场幅值张量。
+The core functionality of this module is a function that takes two electric field tensors as input and returns the corresponding envelope field magnitude tensor.
 
-The core function of this module takes two electric field tensors as input and returns the corresponding envelope field amplitude tensor.
+Assume your finite element model has $N$ voxels, and the electric field at each voxel is a 3D vector $(E_x, E_y, E_z)$. For two current frequencies, you will obtain two electric field tensors $E_1$ and $E_2$.
 
-假设您的有限元模型有 N 个体素，每个体素的电场是一个三维矢量 (Ex, Ey, Ez)。对于两种频率的电流，您会得到两个电场张量 E1 和 E2。
+Input Format Requirements:
+*   `E_1`: The electric field tensor generated by the first frequency, shape `(N, 3)` as a NumPy or JAX array.
+*   `E_2`: The electric field tensor generated by the second frequency, shape `(N, 3)` as a NumPy or JAX array.
 
-Assume your finite element model has N voxels, and the electric field at each voxel is a 3D vector (Ex, Ey, Ez). For two different frequencies of current, you will get two electric field tensors E1 and E2.
-
-输入格式要求：
-Input format requirements:
-*   `E1`: 第一个频率产生的电场张量，形状为 `(N, 3)` 的 NumPy 或 JAX 数组。/ Electric field tensor generated by the first frequency, a NumPy or JAX array with shape `(N, 3)`.
-*   `E2`: 第二个频率产生的电场张量，形状为 `(N, 3)` 的 NumPy 或 JAX 数组。/ Electric field tensor generated by the second frequency, a NumPy or JAX array with shape `(N, 3)`.
-
-函数调用示例：
-Function call example:
-
+Function Call Example:
 ```python
 import jax
 import jax.numpy as jnp
@@ -98,76 +87,54 @@ key = jax.random.PRNGKey(0)
 E1_np = np.random.rand(N, 3) * 0.1  # Example NumPy array
 E2_np = np.random.rand(N, 3) * 0.1
 
-#Convert NumPy arrays to JAX arrays to leverage JAX acceleration
+# Convert NumPy arrays to JAX arrays to enable JAX acceleration
 E1_jax = jnp.array(E1_np)
 E2_jax = jnp.array(E2_np)
 
-# Solve for the envelope field using the JAX function
+# Solve for the interference envelope
 envelope = envelop_jax(E1_jax, E2_jax)
 
-# 
 print("E1 shape:", E1_jax.shape)
 print("E2 shape:", E2_jax.shape)
-print("Envelope shape:", envelope_jax.shape) # The output shape should be (N,)
-print("Envelope values:", envelope_np)
+print("Envelope shape:", envelope_jax.shape) # Output shape should be (N,)
+print("Envelope values:", envelope_np) # Note: Kept envelope_np as in the original, though 'envelope' was calculated.
+```
 
 ## Code Structure
-
 ```
 .
-├── TIS_envelope/          # 代码根目录 (或者您的实际目录名) / Code root directory (or your actual directory name)
-│   └── envelope_solver.py # 求解包络场的核心函数文件 (或者您的实际文件名) / Core function file for solving the envelope field (or your actual file name)
-├── README.md              # 本文件 / This file
-└── requirements.txt       # 依赖列表文件 (可选，但推荐) / List of dependencies (optional but recommended)
-
-```
-*(请根据您的实际文件结构调整)* / *(Please adjust according to your actual file structure)*
-
-## 性能 / Performance
-
-如相关研究论文所示（图 7 和图 8），本模块实现的 JAX 加速求解器在 CPU 和 GPU 上均比基于 NumPy 或 PyTorch 的实现展现出显著的性能优势，计算速度提升接近一个数量级，尤其适用于大规模体素计算。
-
-As demonstrated in the associated research paper (Figures 7 and 8), the JAX-accelerated solver implemented in this module shows significant performance advantages compared to NumPy or PyTorch implementations on both CPU and GPU. It achieves nearly an order of magnitude speedup, especially beneficial for large-scale voxel computations.
-
-## 贡献 / Contributing
-
-欢迎对本项目做出贡献！如果您发现 Bug、有改进建议或想添加新功能，请随时提交 Pull Request。
-
-We welcome contributions to this project! If you find bugs, have suggestions for improvements, or want to add new features, please feel free to submit a Pull Request.
-
-## 许可 / License
-
-本项目使用 [请指定您的许可，例如：MIT License] 许可 - 详情请参阅 `LICENSE` 文件。
-
-This project is licensed under the [Specify License, e.g., MIT License] - see the `LICENSE` file for details.
-
-## 联系方式 / Contact
-
-如果您有任何问题或希望进行合作交流，请通过以下方式联系：
-
-If you have any questions or would like to discuss collaborations, please contact:
-
-*   Wang Yanming (王严明): [论文中的王严明老师邮箱] / [Wang Yanming's email from the paper]
-*   Qiu Bensheng (仇本生): [论文中的仇本生老师邮箱] / [Qiu Bensheng's email from the paper]
-
-## 致谢 / Acknowledgments
-
-本项目基于 [论文中的资助来源] 的支持。
-感谢 JAX 框架的开发者提供了强大的高性能计算工具。
-
-This project was supported by [Funding Sources from the paper].
-Thanks to the developers of the JAX framework for providing powerful high-performance computing tools.
+├── env_jax.py                    # Core function file for solving the envelope field
+├── Benchmark_cpu.py              # Performance comparison script between JAX and NumPy on CPU
+├── Benchmark_cpu.py              # Performance comparison script between JAX and PyTorch on GPU
+├── README.md                     # This file
+├── numpy_jax_comparison.pdf      # Performance difference visualization plot on CPU
+├── jax_pytorch_comparison.pdf    # Performance difference visualization plot on GPU
+├── numpy_jax_comparison.png      # Performance difference visualization plot on CPU
+└── jax_pytorch_comparison.png    # Performance difference visualization plot on GPU
 ```
 
----
 
-**请再次完成以下工作：**
+## Performance 
+The JAX-accelerated solver implemented in this module demonstrates significant performance advantages over implementations based on NumPy or PyTorch on both CPU and GPU, with computation speed increased by nearly an order of magnitude, especially suitable for large-scale voxel calculations.
+### CPU Acceleration Performance
+![CPU Acceleration Performance](numpy_jax_comparison.png "CPU Acceleration Performance")
+### GPU Acceleration Performance
+![GPU Acceleration Performance](jax_pytorch_comparison.png "GPU Acceleration Performance")
 
-1.  **填写占位符：** 将 `[论文链接]`, `https://github.com/ayakacxy/TIS_envelope.git` (替换为您的实际 GitHub 仓库链接), `[请指定您的许可，例如：MIT License]` (两次), `[论文中的王严明老师邮箱]`, `[论文中的仇本生老师邮箱]`, `[论文中的资助来源]`, 以及代码结构和导入部分的文件/函数名 `TIS_envelope.envelope_solver` 和 `simplified_envelope_solution` 替换为您项目的实际信息。
-2.  **创建 `LICENSE` 文件：** 添加您选择的开源许可文本。
-3.  **创建 `requirements.txt` (可选但推荐)：** 列出项目所需的 Python 库及其版本（jax, jaxlib, numpy）。
-4.  **整理代码：** 确保您的代码文件结构与 README 中描述的一致，并且核心计算函数是可导入和调用的。通常会将核心代码放在一个子目录（例如 `TIS_envelope`）下，以便于作为模块导入。
-5.  **测试示例代码：** 运行 README 中的使用示例，确保它能正常工作并产生预期结果。
-6.  **上传到 GitHub：** 将代码文件、LICENSE 文件和 README.md 上传到 GitHub 仓库。
+## Contributing 
 
-这个中英双语 README 应该能很好地向用户介绍您的项目，并方便他们理解和使用。
+Contributions to this project are welcome! If you find bugs, have suggestions for improvement, or want to add new features, please feel free to submit a Pull Request.
+
+## License 
+
+This project is licensed under the MIT License - see the `LICENSE` file for details.
+
+## Contact 
+
+If you have any questions or wish to collaborate, please contact us via the following method:
+
+*   Xiayu Chen [cxy20031013@mail.ustc.edu.cn]
+
+## Acknowledgements 
+
+Thanks to the developers of the `JAX` framework for providing powerful high-performance computing tools. The NumPy-based envelope calculation code is derived from [MOVEA](https://github.com/ncclabsustech/MOVEA)
