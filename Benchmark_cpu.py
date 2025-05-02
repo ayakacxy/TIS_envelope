@@ -12,6 +12,13 @@ import matplotlib.pyplot as plt
 try:
     # Assuming your JAX solver is in a file named env_jax.py and the function is envelop_jax
     from env_jax import envelop_jax
+    # use jax device=cpu
+    jax.config.update("jax_platform_name", "cpu")  # Force JAX to use CPU
+    # Check if JAX is using the CPU
+    if jax.devices()[0].device_kind != 'cpu':
+        print("Warning: JAX is not using the CPU. Please ensure that JAX is configured to use the CPU.")
+    else:
+        print("JAX is configured to use the CPU.")
 except ImportError:
     print("Error: Could not import 'envelop_jax' from 'env_jax.py'.")
     print("Please ensure that the file 'env_jax.py' containing the JAX implementation is available.")
