@@ -6,6 +6,7 @@ import jax.numpy as jnp
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
+
 # Import the JAX implementation of the envelope solver
 # Make sure env_jax.py is in the same directory or correctly added to Python path
 try:
@@ -307,43 +308,10 @@ def run_benchmark(batch_size, num_runs, dim=3, jit_warmup=500):
     }
 
 
-def format_rate(rate):
-    """Formats a number (e.g., ops/sec) into K, M units."""
-    if rate < 0: return "N/A" # Handle error case
-    if rate >= 1e6:
-        return f"{rate / 1e6:.1f}M"
-    elif rate >= 1e3:
-        return f"{rate / 1e3:.1f}K"
-    else:
-        return f"{rate:.0f}"
-
-def format_time_us(time_sec):
-     """Formats time in seconds into microseconds string."""
-     if time_sec < 0: return "N/A" # Handle error case
-     return f"{time_sec * 1000000:.0f} μs"
-
-def format_speedup(speedup):
-    """Formats speedup ratio."""
-    if speedup < 0: return "N/A" # Handle error case
-    return f"{speedup:.2f}x"
-
-def format_diff(diff):
-    """Formats difference value."""
-    if diff == -1: return "Skipped"
-    if diff == -2: return "Error"
-    return f"{diff:.8f}"
-
 def plot_all_results(all_results):
-    """Plot all benchmarking results with improved formatting and larger fonts"""
-
-    # Filter out failed runs for plotting
-    plottable_results = [r for r in all_results if r["avg_numpy_time"] >= 0 and r["avg_jax_time"] >= 0]
-    if not plottable_results:
-        print("No successful benchmark runs to plot.")
-        return
-
-    plt.figure(figsize=(12, 10)) # Increased figure size
-
+    """Plot all benchmarking results with expanded axes, improved formatting and larger fonts"""
+    plt.figure(figsize=(10, 6))
+    
     # Set larger font sizes for all text elements
     plt.rcParams.update({
         'font.size': 14,          # Base font size
@@ -352,180 +320,181 @@ def plot_all_results(all_results):
         'xtick.labelsize': 14,    # X-tick label font size
         'ytick.labelsize': 14,    # Y-tick label font size
         'legend.fontsize': 14,    # Legend font size
-        'figure.titlesize': 18    # Overall figure title
     })
 
     # Extract the actual batch sizes from the results
-    batch_sizes = [r["batch_size"] for r in plottable_results]
-
-    # Create custom x-axis labels formatted in scientific notation
+    batch_sizes = [r["batch_size"] for r in all_results]
+    
+    # Create custom x-axis labels
     x_labels = []
     for size in batch_sizes:
+        # Format to scientific notation with one decimal place (e.g., '1.0e+05')
         formatted_size = f'{size:.1e}'
-        # Improve format: remove '+0' from exponent (e.g., '1.0e+05' -> '1.0e5')
+        # Remove the '+0' part from the exponent if present (e.g., '1.0e+05' -> '1.0e5')
+        # This handles positive exponents < 10.
         formatted_size = formatted_size.replace('e+0', 'e')
-        # formatted_size = formatted_size.replace('e-0', 'e-') # Uncomment if needed for negative exponents
+        # If you also had negative exponents with leading zero (e.g., e-04), you might need:
+        # formatted_size = formatted_size.replace('e-0', 'e-')
+        
         x_labels.append(formatted_size)
-
-    x_pos = np.arange(len(batch_sizes)) # Position the bars/points
-
-    # --- Plot 1: Operations per second ---
+    
+    # 1. Operations per second
     plt.subplot(2, 2, 1)
-    jax_ops_sec = [r["ops_per_sec_jax"] for r in plottable_results]
-    numpy_ops_sec = [r["ops_per_sec_numpy"] for r in plottable_results]
-
-    bar_width = 0.35
-    bars1 = plt.bar(x_pos - bar_width/2, jax_ops_sec, bar_width, label='JAX', color='#ff7f0e') # Using standard palette colors
-    bars2 = plt.bar(x_pos + bar_width/2, numpy_ops_sec, bar_width, label='NumPy', color='#1f77b4')
-
+    jax_ops_sec = [r["ops_per_sec_jax"] for r in all_results]
+    numpy_ops_sec = [r["ops_per_sec_numpy"] for r in all_results]
+    
+    x = np.arange(len(batch_sizes)) if len(batch_sizes) > 1 else [0]
+    bar_width = 0.4
+    
+    plt.bar([i - bar_width / 2 for i in x], jax_ops_sec, bar_width, label='JAX', color='red')
+    plt.bar([i + bar_width / 2 for i in x], numpy_ops_sec, bar_width, label='NumPy', color='blue')
     plt.yscale('log')
-    plt.ylabel('Calculations per Second')
-    plt.title('Envelope Calculations per Second', fontsize=16)
-
-    plt.xticks(x_pos, x_labels, fontsize=14)
+    y_min, y_max = plt.ylim()
+    plt.ylim(y_min, y_max*1.15)  # Increase to 15% extra space for labels
+    x_min, x_max = plt.xlim()
+    plt.xlim(x_min+0.05, x_max-0.05)  # Add padding to x-axis
+    plt.title('Envelope Calculations per Second', fontsize=16, fontweight='bold')
+    
+    plt.xticks(x, x_labels, fontsize=14)
     plt.yticks(fontsize=14)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.legend(fontsize=14, loc='upper right')
+    
+    def format_number(num):
+        if num >= 1e6:
+            return f"{num / 1e6:.1f}M"
+        elif num >= 1e3:
+            return f"{num / 1e3:.1f}K"
+        else:
+            return f"{num:.0f}"
 
-    # Add value labels above bars
-    for bar in bars1:
-        height = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2., height * 1.05, format_rate(height),
-                 ha='center', va='bottom', fontsize=11)
-    for bar in bars2:
-        height = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2., height * 1.05, format_rate(height),
-                 ha='center', va='bottom', fontsize=11)
+    for i, v in enumerate(jax_ops_sec):
+        plt.text(i - bar_width / 2, v * 1.05, format_number(v), ha='center', fontsize=11)
+    for i, v in enumerate(numpy_ops_sec):
+        plt.text(i + bar_width / 2, v * 1.05, format_number(v), ha='center', fontsize=11)
 
-
-    # --- Plot 2: Time per envelope calculation (MICROSECONDS) ---
+    # 2. Time per envelope calculation (MICROSECONDS) - with expanded axes
     plt.subplot(2, 2, 2)
+    
+    # Convert to microseconds (1000x multiplier compared to milliseconds)
+    jax_us = [r["avg_jax_time"] * 1000000 for r in all_results]  # Convert seconds to μs
+    numpy_us = [r["avg_numpy_time"] * 1000000 for r in all_results]  # Convert seconds to μs
 
-    # Convert average time to microseconds (1e6 multiplier)
-    jax_us = [r["avg_jax_time"] * 1e6 for r in plottable_results]
-    numpy_us = [r["avg_numpy_time"] * 1e6 for r in plottable_results]
+    x = np.arange(len(batch_sizes))
 
-    plt.plot(x_pos, jax_us, 'o-', label='JAX', color='#ff7f0e', linewidth=2, markersize=8)
-    plt.plot(x_pos, numpy_us, 'o-', label='NumPy', color='#1f77b4', linewidth=2, markersize=8)
+    plt.plot(x, jax_us, 'o-', label='JAX', color='red', linewidth=2)
+    plt.plot(x, numpy_us, 'o-', label='NumPy', color='blue', linewidth=2)
 
     plt.yscale('log')
-    plt.ylabel('Time per Calculation (μs)')
-    plt.title('Time per Envelope Calculation (μs)', fontsize=16)
+      
+    plt.title('Time per Envelope Calculation (μs)', fontsize=16, fontweight='bold')
     plt.grid(True, which="both", ls="--", alpha=0.7)
     plt.legend(fontsize=14)
-    plt.xticks(x_pos, x_labels, fontsize=14)
+    plt.xticks(x, x_labels, fontsize=14)
     plt.yticks(fontsize=14)
 
-    # Add value labels with microsecond units
-    for i, (xi, yi) in enumerate(zip(x_pos, jax_us)):
-        plt.text(xi, yi * 1.1, format_time_us(yi/1e6), # Pass time in seconds to formatter
-                ha='center', va='bottom', fontsize=12, color='#ff7f0e',
+    # EXPANDED AXES: Add padding to x and y axes for the second plot
+    # Get current axis limits
+    x_min, x_max = plt.xlim()
+    y_min, y_max = plt.ylim()
+    
+    # Add 15% padding to x-axis on both sides
+    x_padding = (x_max - x_min) * 0.07
+    plt.xlim(x_min - x_padding, x_max + x_padding)
+    
+    # Add 20% padding to y-axis (only at the top since this is a log scale)
+    plt.ylim(y_min, y_max * 1.25)
+
+    # Add value labels with microsecond units and improved positioning
+    for i, (xi, yi) in enumerate(zip(x, jax_us)):
+        # Horizontal offset to prevent overlapping with data points
+        h_offset = -0.1 if i < len(x)/2 else 0.1  # Move left for first half, right for second half
+        plt.text(xi + h_offset, yi * 1.1, f"{yi:.0f} μs", 
+                ha='center', va='bottom', fontsize=12, color='red',
+                bbox=dict(facecolor='white', alpha=0.7, pad=1, edgecolor='none'))
+    
+    for i, (xi, yi) in enumerate(zip(x, numpy_us)):
+        h_offset = -0.1 if i < len(x)/2 else 0.1  # Move left for first half, right for second half
+        plt.text(xi + h_offset, yi * 1.1, f"{yi:.0f} μs", 
+                ha='center', va='bottom', fontsize=12, color='blue',
                 bbox=dict(facecolor='white', alpha=0.7, pad=1, edgecolor='none'))
 
-    for i, (xi, yi) in enumerate(zip(x_pos, numpy_us)):
-        plt.text(xi, yi * 0.9, format_time_us(yi/1e6), # Position slightly below for numpy
-                ha='center', va='top', fontsize=12, color='#1f77b4',
-                bbox=dict(facecolor='white', alpha=0.7, pad=1, edgecolor='none'))
-
-
-    # --- Plot 3: JAX vs NumPy result differences ---
+    # 3. JAX vs NumPy result differences
     plt.subplot(2, 2, 3)
-    max_diffs = [r["max_result_diff"] for r in plottable_results]
-    mean_diffs = [r["mean_result_diff"] for r in plottable_results]
+    max_diffs = [r["max_result_diff"] for r in all_results]
+    mean_diffs = [r["mean_result_diff"] for r in all_results]
 
     # Add tolerance baseline
     tolerance = 1e-5
     plt.axhline(y=tolerance, color='red', linestyle='--', linewidth=1, label='Tolerance (1e-5)')
 
-    plt.plot(x_pos, max_diffs, 'o-', label='Max Diff', color='#2ca02c', linewidth=2, markersize=8) # green
-    plt.plot(x_pos, mean_diffs, 'o-', label='Mean Diff', color='#d62728', linewidth=2, markersize=8) # red
+    plt.plot(x, max_diffs, 'o-', label='Max Diff', color='purple', linewidth=2)
+    plt.plot(x, mean_diffs, 'o-', label='Mean Diff', color='green', linewidth=2)
 
-    plt.xticks(x_pos, x_labels, fontsize=14)
+    # Use the custom x-axis labels
+    plt.xticks(x, x_labels, fontsize=14)
     plt.yticks(fontsize=14)
     plt.yscale('log')
-    plt.ylabel('Absolute Difference')
-    plt.title('Result Absolute Difference', fontsize=16)
+    plt.title('Result Absolute Difference', fontsize=16, fontweight='bold')
     plt.grid(True, which="both", ls="--", alpha=0.7)
-    # Adjust legend position to not overlap with lines/points
-    plt.legend(fontsize=14, loc='upper right', bbox_to_anchor=(1.0, 1.0))
+    plt.legend(fontsize=14, bbox_to_anchor=(0.35, 0.55))
 
-    # Add difference values as labels - Only if not skipped/error
-    for i, (xi, max_d, mean_d) in enumerate(zip(x_pos, max_diffs, mean_diffs)):
-         if max_d >= 0: # Check if difference calculation was successful
-            plt.text(xi, max_d * 1.2, format_diff(max_d),
-                    ha='center', va='bottom', fontsize=10, color='#2ca02c',
-                    bbox=dict(facecolor='white', alpha=0.7, pad=1, edgecolor='none'))
-            plt.text(xi, mean_d * 0.8, format_diff(mean_d),
-                    ha='center', va='top', fontsize=10, color='#d62728',
-                     bbox=dict(facecolor='white', alpha=0.7, pad=1, edgecolor='none'))
+    # Mark differences exceeding tolerance
+    for i, (y_max, y_mean) in enumerate(zip(max_diffs, mean_diffs)):
+        if y_max > tolerance:
+            plt.text(i, y_max * 1.2, f'High!', ha='center', color='red', fontsize=10)
+        if y_mean > tolerance:
+            plt.text(i, y_mean * 0.8, f'High!', ha='center', color='red', fontsize=10)
 
-
-    # --- Plot 4: Speedup ratio ---
+    # 4. Speedup ratio - with improved label placement
     plt.subplot(2, 2, 4)
-    speedups = [r["avg_speedup"] for r in plottable_results]
+    speedups = [r["avg_speedup"] for r in all_results]
 
     bar_width = 0.6
-    # Use a single color or gradient for speedup
-    bars = plt.bar(x_pos, speedups, bar_width, color='#8c564b') # brown
-
-    plt.title('JAX Speedup over NumPy', fontsize=16)
+    colors = ['green' if s > 1 else 'red' for s in speedups]
+    bars = plt.bar(x, speedups, bar_width, color=colors)
+    
+    plt.title('JAX Speedup over NumPy', fontsize=16, fontweight='bold')
     plt.axhline(y=1.0, color='black', linestyle='--', linewidth=1)
-    plt.ylabel('Speedup Ratio (JAX/NumPy)')
 
-
-    plt.xticks(x_pos, x_labels, fontsize=14)
+    # Use the custom x-axis labels
+    plt.xticks(x, x_labels, fontsize=14)
     plt.yticks(fontsize=14)
     plt.grid(axis='y', linestyle='--', alpha=0.7)
-
-    # Add label above bars for speedup value
-    for bar in bars:
+    
+    # Adjust y-axis range to make room for labels
+    max_speedup = max(speedups)
+    plt.ylim(0, max_speedup * 1.15)  # Increase to 15% extra space for labels
+    
+    # Improved label placement to avoid overlap with bars
+    for i, bar in enumerate(bars):
         height = bar.get_height()
-        if height >= 0: # Only label if speedup is valid
-            label = f'{height:.1f}x'
-            # Position labels slightly above the bars
-            plt.text(bar.get_x() + bar.get_width()/2., height * 1.05, label,
+        label = f'{height:.1f}x'
+        if height < 1:
+            label = f'{1/height:.1f}x (NumPy)'
+            plt.text(bar.get_x() + bar.get_width() / 2., height - 0.5, label, 
+                     ha='center', va='bottom', fontsize=12)
+        else:
+            # Position labels well above the bars with sufficient padding
+            y_pos = height + max_speedup * 0.02  # Increase vertical offset to 2% of max height
+            plt.text(bar.get_x() + bar.get_width() / 2., y_pos, label, 
                      ha='center', va='bottom', fontsize=12, fontweight='bold',
                      bbox=dict(facecolor='white', alpha=0.7, pad=2, edgecolor='none'))
-        else:
-             # Label N/A for failed runs (should be filtered out but as a safeguard)
-             plt.text(bar.get_x() + bar.get_width()/2., 1.0, "N/A",
-                     ha='center', va='bottom', fontsize=12)
 
-
-    # Add some padding around the x-axis limits for better visualization
-    # plt.xlim(x_pos[0] - bar_width, x_pos[-1] + bar_width) # Only needed if x_pos is not just 0..N-1
-
-    plt.tight_layout(rect=[0, 0.03, 1, 0.98]) # Adjust layout to make space for a potential suptitle
-    # plt.suptitle('NumPy vs JAX Envelope Solver Benchmark', fontsize=18) # Overall title
-    plt.savefig('numpy_jax_comparison.pdf', bbox_inches='tight')
+    # Add more space between subplots to prevent overlap with larger text
+    plt.tight_layout()
+    
+    plt.savefig('numpy_jax_comparison.pdf')
     print("Performance comparison charts saved as 'numpy_jax_comparison.pdf'")
 
 
 def print_summary_table(all_results):
-    """Prints a summary table of benchmark results."""
-    print("\n=== NumPy vs JAX Performance Summary ===")
-    header = f"{'Batch Size':>12} | {'NumPy Total (s)':>18} | {'JAX Total (s)':>18} | {'NumPy Time/Run (ms)':>22} | {'JAX Time/Run (ms)':>22} | {'Speedup Ratio':>15} | {'Max Diff':>12} | {'Mean Diff':>12}"
-    print(header)
-    print("-" * len(header))
+    """Print summary table"""
+    print("\n=== NumPy vs JAX Performance Comparison Summary ===")
+    print(f"{'Batch Size':>10} | {'Total NumPy Time (s)':>20} | {'Total JAX Time (s)':>20} | {'Avg NumPy Time (ms)':>20} | {'Avg JAX Time (ms)':>20} | {'Speedup':>10}")
+    print("-" * 115) # Adjusted line length to accommodate longer English headers
     for r in all_results:
-        # 1. Calculate the string to display for each column first
-        batch_size_str = f"{r['batch_size']:>12}"
-
-        numpy_total_str = f"{r['total_numpy_time']:>18.3f}" if r['total_numpy_time'] >= 0 else f"{'N/A':>18}"
-        jax_total_str = f"{r['total_jax_time']:>18.3f}" if r['total_jax_time'] >= 0 else f"{'N/A':>18}"
-
-        numpy_time_run_ms = r['avg_numpy_time']*1000 if r['avg_numpy_time'] >= 0 else -1
-        numpy_time_run_str = f"{numpy_time_run_ms:>22.3f}" if numpy_time_run_ms >= 0 else f"{'N/A':>22}"
-
-        jax_time_run_ms = r['avg_jax_time']*1000 if r['avg_jax_time'] >= 0 else -1
-        jax_time_run_str = f"{jax_time_run_ms:>22.3f}" if jax_time_run_ms >= 0 else f"{'N/A':>22}"
-
-        speedup_str = f"{format_speedup(r['avg_speedup']):>15}"
-        max_diff_str = f"{format_diff(r['max_result_diff']):>12}"
-        mean_diff_str = f"{format_diff(r['mean_result_diff']):>12}"
-
-        # 2. Print the combined, pre-formatted strings
-        print(f"{batch_size_str} | {numpy_total_str} | {jax_total_str} | {numpy_time_run_str} | {jax_time_run_str} | {speedup_str} | {max_diff_str} | {mean_diff_str}")
+        print(f"{r['batch_size']:>10} | {r['total_numpy_time']:>20.3f} | {r['total_jax_time']:>20.3f} | {r['avg_numpy_time']*1000:>20.3f} | {r['avg_jax_time']*1000:>20.3f} | {r['avg_speedup']:>10.2f}x")
 
 
 if __name__ == "__main__":
