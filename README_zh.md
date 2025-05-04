@@ -31,7 +31,7 @@ $$
 \end{equation}
 $$
 
-其中$\alpha$表示$\vec{E}_1(\vec{r})$和$\vec{E}_2(\vec{r})$之间的夹角。且公式仅在$\alpha <\dfrac{\pi}{2}$，且$\left|\vec{E}_1(\vec{r})\right|>\left|\vec{E}_2(\vec{r})\right|$时成立，否则，就需要将$\vec{E}_2(\vec{r})$反转，并和$\vec{E}_1(\vec{r})$交换.
+其中$`\alpha`$表示$`\vec{E}_1(\vec{r})`$和$`\vec{E}_2(\vec{r})`$之间的夹角。且公式仅在$`\alpha <\dfrac{\pi}{2}`$，且$`\left|\vec{E}_1(\vec{r})\right|>\left|\vec{E}_2(\vec{r})\right|`$时成立，否则，就需要将$`\vec{E}_2(\vec{r})`$反转，并和$`\vec{E}_1(\vec{r})`$交换.
 *   **易于集成：** 可作为一个独立的计算函数，方便集成到其他 TIS 模拟或优化框架中。
 
 ## 环境要求
@@ -63,7 +63,7 @@ $$
     pip install -U "jax[cuda12]"
     ```
     *请务必参考 JAX 官方安装指南，确保安装的 JAXlib 版本与您的 CUDA 版本兼容。*
-    同时目前测试*`torch==2.6.0`和`jax=0.6.0`在`cuda=12.2`的情形下兼容，虽然`jax`的`cudann`版本更高，但和`torch`同时运行不会出问题。**GPU版本的JAX目前无法在Windows上运行，具体可以参考JAX的官方文档[JAX](https://docs.jax.dev/en/latest/)**
+    同时目前测试`torch==2.6.0`和`jax=0.6.0`在`cuda=12.2`的情形下兼容，虽然`jax`的`cudann`版本更高，但和`torch`同时运行不会出问题。**GPU版本的JAX目前无法在Windows上运行，具体可以参考JAX的官方文档[JAX](https://docs.jax.dev/en/latest/)**
 ## 使用方法
 
 本模块的核心功能是一个函数，它接收两个电场张量作为输入，并返回对应的包络场幅值张量。
