@@ -107,7 +107,7 @@ print("Envelope shape:", envelope.shape) # Output shape should be (N,)
 .
 ├── env_jax.py                    # Core function file for solving the envelope field
 ├── Benchmark_cpu.py              # Performance comparison script between JAX and NumPy on CPU
-├── Benchmark_cpu.py              # Performance comparison script between JAX and PyTorch on GPU
+├── Benchmark_gpu.py              # Performance comparison script between JAX and PyTorch on GPU
 ├── README.md                     # This file
 ├── test.py                       # Test file
 ├── numpy_jax_comparison.pdf      # Performance difference visualization plot on CPU
