@@ -18,7 +18,6 @@ This code is the implementation of the high-performance computing module from ou
 **"Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning"**
 *Xiayu Chen, Wennan Chan, Yingqiang Meng, Runze Liu, Yueyi Yu, Sheng Hu, Jijun Han, Xiaoxiao Wang, Jiawei Zhou, Bensheng Qiu, Yanming Wang*
 *IEEE Journal of Biomedical and Health Informatics*, 2025.
-
 **DOI:** `10.1109/JBHI.2025.3605434`
 **Paper Link:** [https://doi.org/10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434)
 
