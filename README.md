@@ -27,15 +27,13 @@ If you use this code in your research, please cite our paper. You can use the fo
 
 ```bibtex
 @article{chen2025multi,
-  author={Chen, Xiayu and Chan, Wennan and Meng, Yingqiang and Liu, Runze and Yu, Yueyi and Hu, Sheng and Han, Jijun and Wang, Xiaoxiao and Zhou, Jiawei and Qiu, Bensheng and Wang, Yanming},
-  journal={IEEE Journal of Biomedical and Health Informatics}, 
-  title={Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning}, 
+  title={Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning},
+  author={Chen, Xiayu and Chan, Wennan and Meng, Yingqiang and Liu, Runze and Yu, Yueyi and Hu, Sheng and Han, Jijun and Wang, Xiaoxiao and Zhou, Jiawei and Qiu, Bensheng and others},
+  journal={IEEE Journal of Biomedical and Health Informatics},
   year={2025},
-  volume={},
-  number={},
-  pages={1-12},
-  keywords={Electrodes;Retina;Optimization;Interference;Electric fields;Bones;Brain modeling;Reinforcement learning;Finite element analysis;Genetic algorithms;High-performance computing;multi-channel;reinforcement learning;retinal;temporal interference stimulation},
-  doi={10.1109/JBHI.2025.3605434}}
+  publisher={IEEE}
+  doi={10.1109/JBHI.2025.3605434}
+}
 
 ````
 
