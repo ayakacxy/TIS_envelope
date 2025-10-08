@@ -174,6 +174,4 @@ If you have any questions or wish to collaborate, please contact us via the foll
 
 Thanks to the developers of the `JAX` framework for providing powerful high-performance computing tools. The NumPy-based envelope calculation code is derived from [MOVEA](https://github.com/ncclabsustech/MOVEA)
 
-```
-```
-$$
+
