@@ -46,7 +46,7 @@ $$
 \begin{equation}
 \left| \vec{E}_{AM}(\vec{r}) \right| =
 \begin{cases}
-2 \left| \vec{E}_2(\vec{r}) \right|, \text{if } \left| \vec{E}_1(\vec{r}) \right| < \left| \vec{E}_2(\vec{r}) \right| \cos(\alpha) \\
+2 \left| \vec{E}_2(\vec{r}) \right|, \text{if } \left| \vec{E}_2(\vec{r}) \right| < \left| \vec{E}_1(\vec{r}) \right| \cos(\alpha) \\
 \quad                                                                                                \\
 \dfrac{2\left| \vec{E}_2(\vec{r}) \times ( \vec{E}_1(\vec{r}) - \vec{E}_2(\vec{r})) \right|}{\left| \vec{E}_1(\vec{r}) - \vec{E}_2(\vec{r}) \right|}, \text{otherwise}
 \end{cases}
