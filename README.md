@@ -31,7 +31,7 @@ If you use this code in your research, please cite our paper. You can use the fo
   author={Chen, Xiayu and Chan, Wennan and Meng, Yingqiang and Liu, Runze and Yu, Yueyi and Hu, Sheng and Han, Jijun and Wang, Xiaoxiao and Zhou, Jiawei and Qiu, Bensheng and others},
   journal={IEEE Journal of Biomedical and Health Informatics},
   year={2025},
-  publisher={IEEE}
+  publisher={IEEE},
   doi={10.1109/JBHI.2025.3605434}
 }
 
