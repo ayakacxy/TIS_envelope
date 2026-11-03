@@ -1,148 +1,119 @@
-# 基于JAX的高性能时域干涉刺激干涉包络求解模块
-本项目提供了一个基于 `JAX` 框架的高性能计算模块，用于快速求解时间干涉刺激 (Temporal Interference Stimulation, TIS) 的包络场（Envelope Field）分布。
+<h1 align="center">Fast TIS Envelope</h1>
 
-时间干涉技术通过叠加不同频率的高频电流，在其差频处产生低频包络，用于实现深部脑区的无创聚焦刺激。包络场的计算是 TIS 模拟和优化中的一个主要计算瓶颈，尤其是在需要处理大量体素的精细模型中。
+<div align="center">
 
-本模块利用 `JAX` 的 `Just-In-Time (JIT)` 编译和向量化等优化策略，显著提高了包络场计算的速度，可用于加速基于 TIS 的神经调控模拟、参数优化等研究工作。
+**快速、跨平台的时域干涉刺激最大包络求解器。**
 
-## 相关研究论文
+[![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-5D5FEF)](pyproject.toml)
+[![License: GPL-3.0-only](https://img.shields.io/badge/License-GPL--3.0--only-blue)](LICENSE)
+[![Python: 3.9+](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
+[![CPU: Numba](https://img.shields.io/badge/CPU-Numba-00A3E0)](docs/zh-CN/optimizations.md)
+[![GPU: Metal](https://img.shields.io/badge/GPU-Metal-333333?logo=apple&logoColor=white)](docs/zh-CN/installation.md)
+[![GPU: CUDA](https://img.shields.io/badge/GPU-CUDA-76B900?logo=nvidia&logoColor=white)](docs/zh-CN/installation.md)
 
-本代码是以下研究论文中高性能计算模块的实现：
+[English](README.md) · [简体中文](README_zh.md) · [文档](docs/zh-CN/index.md) · [优化实现](docs/zh-CN/optimizations.md) · [性能测试](docs/zh-CN/performance.md)
 
-**"Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning"**
-*Xiayu Chen, Wennan Chan, Yingqiang Meng, Runze Liu, Yueyi Yu, Sheng Hu, Jijun Han, Xiaoxiao Wang, Jiawei Zhou, Bensheng Qiu, Yanming Wang*
-[论文链接 (例如：arXiv 或期刊页面)]
+🧠 **TIS 包络** · ⚙️ **多线程 CPU** · ⚡ **Metal / CUDA** · 🐍 **统一 Python 接口**
 
-*如果您在研究中使用了此代码，请引用我们的论文。*
+</div>
 
-## 功能与特性
+## ⚡ 性能
 
-*   **高效计算：** 基于 JAX 实现，通过 JIT 编译和硬件加速（CPU/GPU），显著提升包络场计算速度。
-*   **公式实现：** 实现了时域干涉刺激中用于计算任意方向包络场最大值的公式，适用于处理电场矢量。
+![真实头模型包络求解性能](benchmark_results/real_head_all_methods.png)
 
-$$
-\begin{equation}
-	\left| \vec{E}_{AM}(\vec{r}) \right| =
-	\begin{cases}
-		2 \left| \vec{E}_2(\vec{r}) \right|, \text{if } \left| \vec{E}_1(\vec{r}) \right| < \left| \vec{E}_2(\vec{r}) \right| \cos(\alpha) \\
-		\quad                                                                                                                              \\
-		\dfrac{2\left| \vec{E}_2(\vec{r}) \times ( \vec{E}_1(\vec{r}) - \vec{E}_2(\vec{r})) \right|}{\left| \vec{E}_1(\vec{r}) - \vec{E}_2(\vec{r}) \right|}, \text{otherwise}
-	\end{cases}
-\end{equation}
-$$
+在 1,328,756 个真实头模型体素上，Apple M5 的 Metal 内核达到 **1,745 次/秒**，RTX 2080 Ti 的缩放版 CuPy 内核达到 **8,456 次/秒**。Numba 在 M5 上使用 10 线程达到 **475 次/秒**，在 Xeon 服务器上使用 32 线程达到 **671 次/秒**。
 
-其中$`\alpha`$表示$`\vec{E}_1(\vec{r})`$和$`\vec{E}_2(\vec{r})`$之间的夹角。且公式仅在$`\alpha <\dfrac{\pi}{2}`$，且$`\left|\vec{E}_1(\vec{r})\right|>\left|\vec{E}_2(\vec{r})\right|`$时成立，否则，就需要将$`\vec{E}_2(\vec{r})`$反转，并和$`\vec{E}_1(\vec{r})`$交换.
-*   **易于集成：** 可作为一个独立的计算函数，方便集成到其他 TIS 模拟或优化框架中。
+测量使用 FP32 输入和同步的前向计算，预热 5 次后取 31 次测量的中位数；不包含输入准备、传输和首次编译。CPU 与 GPU 分别测量，计时直接调用各后端。图中的 PyTorch 使用历史基准公式；测试数据与条件见[性能文档](docs/zh-CN/performance.md)。
 
-## 环境要求
+## 🧠 功能
 
-*   Python 3.9+
-*   JAX 和 JAXlib (需要根据您的硬件选择合适的后端进行安装，支持 CPU 和 GPU 加速)
-*   NumPy
+- 从两组三维电场计算最大 TIS 包络幅值。
+- 通过统一 Python 函数调用 NumPy、Numba、JAX、PyTorch、MLX、Metal 和 CuPy。
+- 自动选择后端，也可指定后端和设备编号。
+- 使用缩放计算处理零场、反向、近相等和幅值差异较大的电场。
+- 支持 Numba CPU 并行，以及逐体素并行的 Metal 和 CUDA 融合内核。
+- 支持 JIT 或计算图编译；可选 GPU 依赖按需加载。
 
-## 安装
+## 🔬 算法与优化
 
-1.  **克隆代码库**
-    ```bash
-    git clone https://github.com/ayakacxy/TIS_envelope.git
-    cd TIS_envelope
-    ```
+![包络求解与算子融合示意图](benchmark_results/envelope_optimization.png)
 
-2.  **安装依赖**
-    ```bash
-    ### 创建虚拟环境
-    conda create -n envelop_solve python=3.9
+求解器对每组电场进行缩放和方向调整，根据几何条件选择对应结果，每个体素输出一个包络幅值。数组后端使用掩码表达条件，自定义 GPU 内核并行计算各体素。
 
-    # 安装 JAX (CPU版本) / Install JAX (CPU version)
-    pip install -U jax
+[算法原理](docs/zh-CN/algorithm.md) · [优化说明](docs/zh-CN/optimizations.md) · [可编辑 draw.io](benchmark_results/envelope_optimization.drawio) · [矢量 PDF](benchmark_results/envelope_optimization.pdf)
 
-    # 如果您有 CUDA GPU，建议安装 GPU 版本以获得最佳性能
-    # 请根据您的 CUDA 版本参考 JAX 官方文档选择对应的 jaxlib 版本安装
-    # https://docs.jax.dev/en/latest/installation.html
-    # 例如 (以 CUDA 12 为例):
-    pip install -U "jax[cuda12]"
-    ```
-    *请务必参考 JAX 官方安装指南，确保安装的 JAXlib 版本与您的 CUDA 版本兼容。*
-    同时目前测试`torch==2.6.0`和`jax=0.6.0`在`cuda=12.2`的情形下兼容，虽然`jax`的`cudann`版本更高，但和`torch`同时运行不会出问题。**GPU版本的JAX目前无法在Windows上运行，具体可以参考JAX的官方文档[JAX](https://docs.jax.dev/en/latest/)**
-## 使用方法
+## 📦 安装
 
-本模块的核心功能是一个函数，它接收两个电场张量作为输入，并返回对应的包络场幅值张量。
+Python 发行包和导入名均为 `fast_tis_envelope`，需要 Python 3.9 或更新版本。在项目根目录运行 `python -m pip install .`，也可以构建 wheel：
 
-假设您的有限元模型有 $N$ 个体素，每个体素的电场是一个三维矢量 $(E_x, E_y, E_z)$。对于两种频率的电流，您会得到两个电场张量 $E_1$ 和 $E_2$。
+```bash
+python -m pip wheel . --no-deps -w dist
+python -m pip install ./dist/fast_tis_envelope-0.2.0-py3-none-any.whl
+```
 
-输入格式要求：
-*   `E_1`: 第一个频率产生的电场张量，形状为 `(N, 3)` 的 NumPy 或 JAX 数组。
-*   `E_2`: 第二个频率产生的电场张量，形状为 `(N, 3)` 的 NumPy 或 JAX 数组。
+需要 CPU 加速或 Apple Metal 时，选择相应依赖：
 
-函数调用示例：
+```bash
+python -m pip install './dist/fast_tis_envelope-0.2.0-py3-none-any.whl[cpu]'
+python -m pip install './dist/fast_tis_envelope-0.2.0-py3-none-any.whl[metal]'
+```
+
+NVIDIA CUDA 使用 CuPy，请按 CUDA 环境选择对应构建。JAX 和 PyTorch 均为可选依赖。CUDA、其他依赖和源码安装方法见[安装说明](docs/zh-CN/installation.md)。
+
+## 🚀 快速开始
+
 ```python
-import jax
-import jax.numpy as jnp
 import numpy as np
-from env_jax import envelop_jax
+from fast_tis_envelope import envelope
 
+e1 = np.array([[1., 0., 0.], [1., 0., 0.]], dtype=np.float32)
+e2 = np.array([[0., 1., 0.], [1., 0., 0.]], dtype=np.float32)
 
-N = 10
-key = jax.random.PRNGKey(0)
-E1_np = np.random.rand(N, 3) * 0.1  # Example NumPy array
-E2_np = np.random.rand(N, 3) * 0.1
-
-# Convert NumPy arrays to JAX arrays to enable JAX acceleration
-E1_jax = jnp.array(E1_np)
-E2_jax = jnp.array(E2_np)
-
-# Solve for the interference envelope
-envelope = envelop_jax(E1_jax, E2_jax)
-
-print("E1 shape:", E1_jax.shape)
-print("E2 shape:", E2_jax.shape)
-print("Envelope shape:", envelope.shape) # Output shape should be (N,)
-```
-## 代码结构
-
-```
-.
-├── env_jax.py                    # 求解包络场的核心函数文件
-├── Benchmark_cpu.py              # 在CPU上JAX和Numpy的性能对比脚本
-├── Benchmark_cpu.py              # 在GPU上JAX和PyTorch的性能对比脚本
-├── README.md                     # 本文件
-├── test.py                       # 测试代码
-├── numpy_jax_comparison.pdf      # CPU上的性能差异可视化图
-├── jax_pytorch_comparison.pdf    # GPU上的性能差异可视化图
-├── numpy_jax_comparison.png      # CPU上的性能差异可视化图
-├── jax_pytorch_comparison.png    # GPU上的性能差异可视化图
-└── LICENSE
+result = envelope(e1, e2)  # [1.4142135, 2.0]
 ```
 
+输入电场形状为 `(N, 3)`，输出形状为 `(N,)`。主机数组默认使用 Numba CPU，未安装时使用 NumPy；框架数组默认使用其自身后端。
 
-## 性能 
+## 🐍 Python 接口
 
-本模块实现的 JAX 加速求解器在 CPU 和 GPU 上均比基于 NumPy 或 PyTorch 的实现展现出显著的性能优势，计算速度提升接近一个数量级，尤其适用于大规模体素计算。
+```python
+from fast_tis_envelope import envelope, resolve_backend
 
-### CPU加速性能
+result = envelope(e1, e2, backend="numba", device="cpu", parallel=True)
+result = envelope(e1, e2, backend="metal", device="mps:0")
+result = envelope(e1, e2, backend="cupy", device="cuda:0")
+result = envelope(e1, e2, backend="torch", device="cuda:0", compile=True)
+print(resolve_backend(e1, e2, backend="auto", device="auto"))
+```
 
-![CPU加速性能](numpy_jax_comparison.png "CPU加速性能")
+设备编号从 0 开始，按对应框架可见的设备顺序编号。显式选择设备时，输入会按需迁移。输入类型、精度、编译和设备选择见[使用说明](docs/zh-CN/usage.md)。
 
-### GPU加速性能
+## 📖 文档
 
-![GPU加速性能](jax_pytorch_comparison.png "GPU加速性能")
+- [安装说明](docs/zh-CN/installation.md)：wheel、源码与后端依赖。
+- [使用说明](docs/zh-CN/usage.md)：接口、设备选择与编译。
+- [算法原理](docs/zh-CN/algorithm.md)：最大包络定义与分段计算。
+- [优化实现](docs/zh-CN/optimizations.md)：数值计算、并行与融合内核。
+- [性能测试](docs/zh-CN/performance.md)：硬件、测量、图表与复现。
+- [v0.1.0 版本](https://github.com/ayakacxy/TIS_envelope/releases/tag/v0.1.0)：原始 JAX 版本。
 
-## 贡献 
+## 📄 引用与许可
 
-欢迎对本项目做出贡献！如果您发现 Bug、有改进建议或想添加新功能，请随时提交 Pull Request。
+使用本项目时，请引用 **Chen 等，Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning，IEEE JBHI，2025**，[doi:10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434)。
 
-## 许可 
+<details>
+<summary>BibTeX</summary>
 
-本项目使用MIT许可 - 详情请参阅 `LICENSE` 文件。
+```bibtex
+@article{chen2025multi,
+  title={Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning},
+  author={Chen, Xiayu and Chan, Wennan and Meng, Yingqiang and Liu, Runze and Yu, Yueyi and Hu, Sheng and Han, Jijun and Wang, Xiaoxiao and Zhou, Jiawei and Qiu, Bensheng and others},
+  journal={IEEE Journal of Biomedical and Health Informatics},
+  year={2025},
+  doi={10.1109/JBHI.2025.3605434}
+}
+```
 
-## 联系方式 
+</details>
 
-如果您有任何问题或希望进行合作交流，请通过以下方式联系：
-
-*   Xiayu Chen [cxy20031013@mail.ustc.edu.cn]
-
-## 致谢 
-
-感谢 `JAX` 框架的开发者提供了强大的高性能计算工具。基于 `Numpy` 的包络计算代码来自[MOVEA](https://github.com/ncclabsustech/MOVEA)
-
-
+Fast TIS Envelope 采用 [GNU GPL v3.0 only](LICENSE)。原始 v1 快照保留其 [MIT 许可](licenses/LICENSE-v1-MIT.txt)。

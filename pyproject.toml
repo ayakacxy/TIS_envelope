@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fast-tis-envelope"
+version = "0.2.0"
+description = "Fast multi-backend maximum envelope solver for temporal interference stimulation"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+dependencies = ["numpy>=1.23"]
+
+[project.optional-dependencies]
+cpu = ["numba"]
+jax = ["jax"]
+torch = ["torch"]
+mlx = ["mlx; platform_system == 'Darwin' and platform_machine == 'arm64'"]
+metal = ["mlx; platform_system == 'Darwin' and platform_machine == 'arm64'"]
+cuda12 = ["cupy-cuda12x"]
+cuda13 = ["cupy-cuda13x"]
+test = ["pytest"]
+
+[tool.setuptools]
+py-modules = ["env_jax"]
+license-files = ["LICENSE", "licenses/LICENSE-v1-MIT.txt"]
+
+[tool.setuptools.packages.find]
+include = ["fast_tis_envelope*", "tis_envelope*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
