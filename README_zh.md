@@ -99,21 +99,22 @@ print(resolve_backend(e1, e2, backend="auto", device="auto"))
 
 ## 📄 引用与许可
 
-使用本项目时，请引用 **Chen 等，Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning，IEEE JBHI，2025**，[doi:10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434)。
-
-<details>
-<summary>BibTeX</summary>
+使用本项目时，请引用 **Chen 等，Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning，IEEE JBHI，2026，30(3): 2101–2112**，[doi:10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434)。
 
 ```bibtex
-@article{chen2025multi,
-  title={Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning},
-  author={Chen, Xiayu and Chan, Wennan and Meng, Yingqiang and Liu, Runze and Yu, Yueyi and Hu, Sheng and Han, Jijun and Wang, Xiaoxiao and Zhou, Jiawei and Qiu, Bensheng and others},
-  journal={IEEE Journal of Biomedical and Health Informatics},
-  year={2025},
-  doi={10.1109/JBHI.2025.3605434}
+@article{chen2026multi,
+  title   = {{Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning}},
+  author  = {Chen, Xiayu and Chan, Wennan and Meng, Yingqiang and Liu, Runze and
+             Yu, Yueyi and Hu, Sheng and Han, Jijun and Wang, Xiaoxiao and
+             Zhou, Jiawei and Qiu, Bensheng and Wang, Yanming},
+  journal = {IEEE Journal of Biomedical and Health Informatics},
+  year    = {2026},
+  volume  = {30},
+  number  = {3},
+  pages   = {2101--2112},
+  month   = mar,
+  doi     = {10.1109/JBHI.2025.3605434}
 }
 ```
-
-</details>
 
 Fast TIS Envelope 采用 [GNU GPL v3.0 only](LICENSE)。原始 v1 快照保留其 [MIT 许可](licenses/LICENSE-v1-MIT.txt)。

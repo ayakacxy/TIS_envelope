@@ -99,21 +99,22 @@ Device indices start at zero and follow the devices visible to the selected fram
 
 ## 📄 Citation and license
 
-If you use this software, please cite **Chen et al., “Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning,” IEEE JBHI, 2025**, [doi:10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434).
-
-<details>
-<summary>BibTeX</summary>
+If you use this software, please cite **Chen et al., “Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning,” IEEE JBHI, 2026, 30(3): 2101–2112**, [doi:10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434).
 
 ```bibtex
-@article{chen2025multi,
-  title={Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning},
-  author={Chen, Xiayu and Chan, Wennan and Meng, Yingqiang and Liu, Runze and Yu, Yueyi and Hu, Sheng and Han, Jijun and Wang, Xiaoxiao and Zhou, Jiawei and Qiu, Bensheng and others},
-  journal={IEEE Journal of Biomedical and Health Informatics},
-  year={2025},
-  doi={10.1109/JBHI.2025.3605434}
+@article{chen2026multi,
+  title   = {{Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning}},
+  author  = {Chen, Xiayu and Chan, Wennan and Meng, Yingqiang and Liu, Runze and
+             Yu, Yueyi and Hu, Sheng and Han, Jijun and Wang, Xiaoxiao and
+             Zhou, Jiawei and Qiu, Bensheng and Wang, Yanming},
+  journal = {IEEE Journal of Biomedical and Health Informatics},
+  year    = {2026},
+  volume  = {30},
+  number  = {3},
+  pages   = {2101--2112},
+  month   = mar,
+  doi     = {10.1109/JBHI.2025.3605434}
 }
 ```
-
-</details>
 
 Fast TIS Envelope is licensed under [GNU GPL v3.0 only](LICENSE). The original v1 snapshot retains its [MIT license](licenses/LICENSE-v1-MIT.txt).
