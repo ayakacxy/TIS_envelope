@@ -22,7 +22,6 @@ cuda13 = ["cupy-cuda13x"]
 test = ["pytest"]
 
 [tool.setuptools]
-py-modules = ["env_jax"]
 license-files = ["LICENSE", "licenses/LICENSE-v1-MIT.txt"]
 
 [tool.setuptools.packages.find]
