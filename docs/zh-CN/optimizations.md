@@ -4,7 +4,8 @@
 
 ![包络求解与融合内核](../../benchmark_results/envelope_optimization.png)
 
-[可编辑 draw.io](../../benchmark_results/envelope_optimization.drawio) · [矢量 PDF](../../benchmark_results/envelope_optimization.pdf)
+[可编辑 draw.io](../../benchmark_results/envelope_optimization.drawio) ·
+[矢量 PDF](../../benchmark_results/envelope_optimization.pdf)
 
 - **缩放计算**：分别缩放两组电场，并对差向量归一化，减少上溢与下溢；分段公式处理零场、相等和反向电场。
 - **掩码并行**：数组实现通过掩码和选择操作，批量计算各体素的几何条件。

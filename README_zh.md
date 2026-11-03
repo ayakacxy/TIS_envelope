@@ -11,7 +11,8 @@
 [![GPU: Metal](https://img.shields.io/badge/GPU-Metal-333333?logo=apple&logoColor=white)](docs/zh-CN/installation.md)
 [![GPU: CUDA](https://img.shields.io/badge/GPU-CUDA-76B900?logo=nvidia&logoColor=white)](docs/zh-CN/installation.md)
 
-[English](README.md) · [简体中文](README_zh.md) · [文档](docs/zh-CN/index.md) · [优化实现](docs/zh-CN/optimizations.md) · [性能测试](docs/zh-CN/performance.md)
+[English](README.md) · [简体中文](README_zh.md) · [文档](docs/zh-CN/index.md) ·
+[优化实现](docs/zh-CN/optimizations.md) · [性能测试](docs/zh-CN/performance.md)
 
 🧠 **TIS 包络** · ⚙️ **多线程 CPU** · ⚡ **Metal / CUDA** · 🐍 **统一 Python 接口**
 
@@ -21,9 +22,11 @@
 
 ![真实头模型包络求解性能](benchmark_results/real_head_all_methods.png)
 
-在 1,328,756 个真实头模型体素上，Apple M5 的 Metal 内核达到 **1,745 次/秒**，RTX 2080 Ti 的缩放版 CuPy 内核达到 **8,456 次/秒**。Numba 在 M5 上使用 10 线程达到 **475 次/秒**，在 Xeon 服务器上使用 32 线程达到 **671 次/秒**。
+在 1,328,756 个真实头模型体素上，Apple M5 的 Metal 内核达到 **1,745 次/秒**，RTX 2080 Ti 的缩放版 CuPy 内核达到 **8,456
+次/秒**。Numba 在 M5 上使用 10 线程达到 **475 次/秒**，在 Xeon 服务器上使用 32 线程达到 **671 次/秒**。
 
-测量使用 FP32 输入和同步的前向计算，预热 5 次后取 31 次测量的中位数；不包含输入准备、传输和首次编译。CPU 与 GPU 分别测量，计时直接调用各后端。图中的 PyTorch 使用历史基准公式；测试数据与条件见[性能文档](docs/zh-CN/performance.md)。
+测量使用 FP32 输入和同步的前向计算，预热 5 次后取 31 次测量的中位数；不包含输入准备、传输和首次编译。CPU 与 GPU 分别测量，计时直接调用各后端。图中的 PyTorch
+使用历史基准公式；测试数据与条件见[性能文档](docs/zh-CN/performance.md)。
 
 ## 🧠 功能
 
@@ -40,11 +43,14 @@
 
 求解器对每组电场进行缩放和方向调整，根据几何条件选择对应结果，每个体素输出一个包络幅值。数组后端使用掩码表达条件，自定义 GPU 内核并行计算各体素。
 
-[算法原理](docs/zh-CN/algorithm.md) · [优化说明](docs/zh-CN/optimizations.md) · [可编辑 draw.io](benchmark_results/envelope_optimization.drawio) · [矢量 PDF](benchmark_results/envelope_optimization.pdf)
+[算法原理](docs/zh-CN/algorithm.md) · [优化说明](docs/zh-CN/optimizations.md) ·
+[可编辑 draw.io](benchmark_results/envelope_optimization.drawio) ·
+[矢量 PDF](benchmark_results/envelope_optimization.pdf)
 
 ## 📦 安装
 
-Python 发行包和导入名均为 `fast_tis_envelope`，需要 Python 3.9 或更新版本。在项目根目录运行 `python -m pip install .`，也可以构建 wheel：
+Python 发行包和导入名均为 `fast_tis_envelope`，需要 Python 3.9 或更新版本。在项目根目录运行 `python -m pip install .`，也可以构建
+wheel：
 
 ```bash
 python -m pip wheel . --no-deps -w dist
@@ -58,7 +64,8 @@ python -m pip install './dist/fast_tis_envelope-0.2.0-py3-none-any.whl[cpu]'
 python -m pip install './dist/fast_tis_envelope-0.2.0-py3-none-any.whl[metal]'
 ```
 
-NVIDIA CUDA 使用 CuPy，请按 CUDA 环境选择对应构建。JAX 和 PyTorch 均为可选依赖。CUDA、其他依赖和源码安装方法见[安装说明](docs/zh-CN/installation.md)。
+NVIDIA CUDA 使用 CuPy，请按 CUDA 环境选择对应构建。JAX 和 PyTorch
+均为可选依赖。CUDA、其他依赖和源码安装方法见[安装说明](docs/zh-CN/installation.md)。
 
 ## 🚀 快速开始
 
@@ -99,7 +106,9 @@ print(resolve_backend(e1, e2, backend="auto", device="auto"))
 
 ## 📄 引用与许可
 
-使用本项目时，请引用 **Chen 等，Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning，IEEE JBHI，2026，30(3): 2101–2112**，[doi:10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434)。
+使用本项目时，请引用 **Chen 等，Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement
+Learning，IEEE JBHI，2026，30(3):
+2101–2112**，[doi:10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434)。
 
 ```bibtex
 @article{chen2026multi,

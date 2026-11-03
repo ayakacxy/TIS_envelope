@@ -4,7 +4,8 @@
 
 ## Requirements
 
-Fast TIS Envelope requires Python 3.9+. The base installation uses NumPy; Numba, JAX, PyTorch, MLX and CuPy are optional. The Python import is `fast_tis_envelope`.
+Fast TIS Envelope requires Python 3.9+. The base installation uses NumPy; Numba, JAX, PyTorch, MLX
+and CuPy are optional. The Python import is `fast_tis_envelope`.
 
 ## Install from source
 
@@ -38,14 +39,17 @@ python -m pip install './dist/fast_tis_envelope-0.2.0-py3-none-any.whl[metal]'
 
 ## NVIDIA CUDA
 
-The CUDA kernel uses CuPy. If CuPy is already installed, install the base package; for a new environment, select the extra matching the CUDA version:
+The CUDA kernel uses CuPy. If CuPy is already installed, install the base package; for a new
+environment, select the extra matching the CUDA version:
 
 ```bash
 python -m pip install '.[cuda12]'       # CUDA 12.x
 # Or: python -m pip install '.[cuda13]'  # CUDA 13.x
 ```
 
-Use one CuPy distribution per environment. See the [CuPy installation guide](https://docs.cupy.dev/en/stable/install.html) for compatible CUDA drivers and runtimes. Select GPU builds of JAX and PyTorch using their installation guides.
+Use one CuPy distribution per environment. See the
+[CuPy installation guide](https://docs.cupy.dev/en/stable/install.html) for compatible CUDA drivers
+and runtimes. Select GPU builds of JAX and PyTorch using their installation guides.
 
 ## Verify the installation
 
@@ -53,4 +57,5 @@ Use one CuPy distribution per environment. See the [CuPy installation guide](htt
 python -c "import fast_tis_envelope as f; print(f.__version__)"
 ```
 
-To run the tests, install `python -m pip install -e '.[cpu,test]'` from the project root and run `python -m pytest`. GPU tests need the corresponding device and runtime.
+To run the tests, install `python -m pip install -e '.[cpu,test]'` from the project root and run
+`python -m pytest`. GPU tests need the corresponding device and runtime.

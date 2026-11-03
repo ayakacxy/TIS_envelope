@@ -27,10 +27,12 @@ A = \begin{cases}
 \end{cases}
 ```
 
-相等或反向的电场经方向调整后得到 $2\lVert\mathbf a\rVert$；任一电场为零时结果为零。实现中分别缩放两组电场，并对差向量归一化，再计算范数、投影和叉积，以减少中间运算的上溢与下溢。
+相等或反向的电场经方向调整后得到
+$2\lVert\mathbf a\rVert$；任一电场为零时结果为零。实现中分别缩放两组电场，并对差向量归一化，再计算范数、投影和叉积，以减少中间运算的上溢与下溢。
 
 ## 实现方式
 
-NumPy、JAX、PyTorch 和 MLX 使用数组操作表达分段条件；Numba、Metal 和 CuPy 内核按体素计算。各后端使用相同的最大包络定义，设备、精度和编译选项见[使用说明](usage.md)。
+NumPy、JAX、PyTorch 和 MLX 使用数组操作表达分段条件；Numba、Metal 和 CuPy
+内核按体素计算。各后端使用相同的最大包络定义，设备、精度和编译选项见[使用说明](usage.md)。
 
 [优化实现](optimizations.md) · [性能测试](performance.md)

@@ -4,7 +4,8 @@
 
 ## 环境要求
 
-Fast TIS Envelope 需要 Python 3.9+。基础安装依赖 NumPy；Numba、JAX、PyTorch、MLX 和 CuPy 按需安装。Python 导入名为 `fast_tis_envelope`。
+Fast TIS Envelope 需要 Python 3.9+。基础安装依赖 NumPy；Numba、JAX、PyTorch、MLX 和 CuPy 按需安装。Python 导入名为
+`fast_tis_envelope`。
 
 ## 从源码安装
 
@@ -45,7 +46,8 @@ python -m pip install '.[cuda12]'       # CUDA 12.x
 # 或：python -m pip install '.[cuda13]'  # CUDA 13.x
 ```
 
-同一环境使用一个 CuPy 发行包。CUDA 驱动、运行时和 CuPy 版本的选择见 [CuPy 安装文档](https://docs.cupy.dev/en/stable/install.html)。JAX 和 PyTorch 的 GPU 构建按各自的安装说明选择。
+同一环境使用一个 CuPy 发行包。CUDA 驱动、运行时和 CuPy 版本的选择见
+[CuPy 安装文档](https://docs.cupy.dev/en/stable/install.html)。JAX 和 PyTorch 的 GPU 构建按各自的安装说明选择。
 
 ## 检查安装
 

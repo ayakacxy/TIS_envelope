@@ -11,7 +11,8 @@
 [![GPU: Metal](https://img.shields.io/badge/GPU-Metal-333333?logo=apple&logoColor=white)](docs/en/installation.md)
 [![GPU: CUDA](https://img.shields.io/badge/GPU-CUDA-76B900?logo=nvidia&logoColor=white)](docs/en/installation.md)
 
-[English](README.md) · [简体中文](README_zh.md) · [Documentation](docs/en/index.md) · [Optimizations](docs/en/optimizations.md) · [Performance](docs/en/performance.md)
+[English](README.md) · [简体中文](README_zh.md) · [Documentation](docs/en/index.md) ·
+[Optimizations](docs/en/optimizations.md) · [Performance](docs/en/performance.md)
 
 🧠 **TIS envelope** · ⚙️ **Multithreaded CPU** · ⚡ **Metal / CUDA** · 🐍 **Unified Python API**
 
@@ -21,9 +22,14 @@
 
 ![Real-head envelope solver performance](benchmark_results/real_head_all_methods.png)
 
-On 1,328,756 real-head voxels, the Metal kernel reached **1,745 calls/s** on Apple M5 and the scaled CuPy kernel reached **8,456 calls/s** on an RTX 2080 Ti. Numba reached **475 calls/s** with 10 threads on M5 and **671 calls/s** with 32 threads on the Xeon server.
+On 1,328,756 real-head voxels, the Metal kernel reached **1,745 calls/s** on Apple M5 and the scaled
+CuPy kernel reached **8,456 calls/s** on an RTX 2080 Ti. Numba reached **475 calls/s** with 10
+threads on M5 and **671 calls/s** with 32 threads on the Xeon server.
 
-Measurements use FP32 inputs and synchronized forward calls, with 5 warmups and the median of 31 samples. Input preparation, transfer and initial compilation are excluded. CPU and GPU runs were measured separately. Timings measure backend calls directly. The figure includes the historical PyTorch baseline formula; details and measurements are in [Performance](docs/en/performance.md).
+Measurements use FP32 inputs and synchronized forward calls, with 5 warmups and the median of 31
+samples. Input preparation, transfer and initial compilation are excluded. CPU and GPU runs were
+measured separately. Timings measure backend calls directly. The figure includes the historical
+PyTorch baseline formula; details and measurements are in [Performance](docs/en/performance.md).
 
 ## 🧠 Features
 
@@ -38,13 +44,18 @@ Measurements use FP32 inputs and synchronized forward calls, with 5 warmups and 
 
 ![Envelope solver and kernel fusion](benchmark_results/envelope_optimization.png)
 
-The solver scales and orients each field pair, evaluates the applicable geometric case, and returns one envelope amplitude per voxel. Array backends express the cases with masks; the fused GPU kernels execute independent voxel calculations in parallel.
+The solver scales and orients each field pair, evaluates the applicable geometric case, and returns
+one envelope amplitude per voxel. Array backends express the cases with masks; the fused GPU kernels
+execute independent voxel calculations in parallel.
 
-[Algorithm](docs/en/algorithm.md) · [Optimization guide](docs/en/optimizations.md) · [Editable draw.io](benchmark_results/envelope_optimization.drawio) · [Vector PDF](benchmark_results/envelope_optimization.pdf)
+[Algorithm](docs/en/algorithm.md) · [Optimization guide](docs/en/optimizations.md) ·
+[Editable draw.io](benchmark_results/envelope_optimization.drawio) ·
+[Vector PDF](benchmark_results/envelope_optimization.pdf)
 
 ## 📦 Installation
 
-The distribution and Python import are named `fast_tis_envelope`. Python 3.9+ is required. Install from the project root with `python -m pip install .`, or build a wheel:
+The distribution and Python import are named `fast_tis_envelope`. Python 3.9+ is required. Install
+from the project root with `python -m pip install .`, or build a wheel:
 
 ```bash
 python -m pip wheel . --no-deps -w dist
@@ -58,7 +69,9 @@ python -m pip install './dist/fast_tis_envelope-0.2.0-py3-none-any.whl[cpu]'
 python -m pip install './dist/fast_tis_envelope-0.2.0-py3-none-any.whl[metal]'
 ```
 
-NVIDIA CUDA uses CuPy; choose a CuPy build compatible with the CUDA environment. JAX and PyTorch are optional. See [installation](docs/en/installation.md) for CUDA, optional extras and source installation.
+NVIDIA CUDA uses CuPy; choose a CuPy build compatible with the CUDA environment. JAX and PyTorch are
+optional. See [installation](docs/en/installation.md) for CUDA, optional extras and source
+installation.
 
 ## 🚀 Quick start
 
@@ -72,7 +85,8 @@ e2 = np.array([[0., 1., 0.], [1., 0., 0.]], dtype=np.float32)
 result = envelope(e1, e2)  # [1.4142135, 2.0]
 ```
 
-For fields of shape `(N, 3)`, the result has shape `(N,)`. Host arrays use Numba on CPU when available, otherwise NumPy. Native framework arrays use their own backend.
+For fields of shape `(N, 3)`, the result has shape `(N,)`. Host arrays use Numba on CPU when
+available, otherwise NumPy. Native framework arrays use their own backend.
 
 ## 🐍 Python API
 
@@ -86,7 +100,9 @@ result = envelope(e1, e2, backend="torch", device="cuda:0", compile=True)
 print(resolve_backend(e1, e2, backend="auto", device="auto"))
 ```
 
-Device indices start at zero and follow the devices visible to the selected framework. Explicit placement transfers inputs as needed. See [usage](docs/en/usage.md) for input types, precision, compilation and device selection.
+Device indices start at zero and follow the devices visible to the selected framework. Explicit
+placement transfers inputs as needed. See [usage](docs/en/usage.md) for input types, precision,
+compilation and device selection.
 
 ## 📖 Documentation
 
@@ -95,11 +111,14 @@ Device indices start at zero and follow the devices visible to the selected fram
 - [Algorithm](docs/en/algorithm.md): maximum envelope and piecewise evaluation.
 - [Optimizations](docs/en/optimizations.md): numerical formulation, parallelism and fused kernels.
 - [Performance](docs/en/performance.md): hardware, measurements, figures and reproduction.
-- [Version 0.1.0](https://github.com/ayakacxy/TIS_envelope/releases/tag/v0.1.0): original JAX release.
+- [Version 0.1.0](https://github.com/ayakacxy/TIS_envelope/releases/tag/v0.1.0): original JAX
+  release.
 
 ## 📄 Citation and license
 
-If you use this software, please cite **Chen et al., “Multi-Channel Temporal Interference Retinal Stimulation Based on Reinforcement Learning,” IEEE JBHI, 2026, 30(3): 2101–2112**, [doi:10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434).
+If you use this software, please cite **Chen et al., “Multi-Channel Temporal Interference Retinal
+Stimulation Based on Reinforcement Learning,” IEEE JBHI, 2026, 30(3): 2101–2112**,
+[doi:10.1109/JBHI.2025.3605434](https://doi.org/10.1109/JBHI.2025.3605434).
 
 ```bibtex
 @article{chen2026multi,
@@ -117,4 +136,5 @@ If you use this software, please cite **Chen et al., “Multi-Channel Temporal I
 }
 ```
 
-Fast TIS Envelope is licensed under [GNU GPL v3.0 only](LICENSE). The original v1 snapshot retains its [MIT license](licenses/LICENSE-v1-MIT.txt).
+Fast TIS Envelope is licensed under [GNU GPL v3.0 only](LICENSE). The original v1 snapshot retains
+its [MIT license](licenses/LICENSE-v1-MIT.txt).

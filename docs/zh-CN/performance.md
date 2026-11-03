@@ -31,7 +31,9 @@
 
 PyTorch 测量使用原始基准公式；CuPy 非缩放版和 MLX-fast 是面向常见幅值的对照实现。图中其余缩放实现使用稳健求解公式。结果反映所列软硬件、线程数和输入下的性能。
 
-[排行榜 PDF](../../benchmark_results/real_head_all_methods.pdf) · [优化示意图 PDF](../../benchmark_results/envelope_optimization.pdf) · [可编辑示意图](../../benchmark_results/envelope_optimization.drawio)
+[排行榜 PDF](../../benchmark_results/real_head_all_methods.pdf) ·
+[优化示意图 PDF](../../benchmark_results/envelope_optimization.pdf) ·
+[可编辑示意图](../../benchmark_results/envelope_optimization.drawio)
 
 ## 各平台图表
 
@@ -46,8 +48,11 @@ PyTorch 测量使用原始基准公式；CuPy 非缩放版和 MLX-fast 是面向
 
 测量数据保存为 JSON，包含逐次耗时、误差、软硬件信息、输入哈希和源码哈希：
 
-- Apple M5：[CPU](../../benchmark_results/cpu_measurements_jax_2026-11-03.json) · [GPU](../../benchmark_results/gpu_measurements_torch_compiled_2026-11-03.json)
-- Xeon / RTX 2080 Ti：[CPU](../../benchmark_results/server_cpu_base_final.json) · [CPU 32 线程](../../benchmark_results/server_cpu32_final.json) · [GPU](../../benchmark_results/server_gpu_final.json)
+- Apple M5：[CPU](../../benchmark_results/cpu_measurements_jax_2026-11-03.json) ·
+  [GPU](../../benchmark_results/gpu_measurements_torch_compiled_2026-11-03.json)
+- Xeon / RTX 2080 Ti：[CPU](../../benchmark_results/server_cpu_base_final.json) ·
+  [CPU 32 线程](../../benchmark_results/server_cpu32_final.json) ·
+  [GPU](../../benchmark_results/server_gpu_final.json)
 
 使用 `python -m pip install matplotlib` 安装 Matplotlib，然后在项目根目录运行以下命令重新绘制排行榜：
 
@@ -61,4 +66,7 @@ python benchmarks/plot_real_head_all.py \
   --output-dir benchmark_outputs
 ```
 
-`benchmarks/plot_cpu_gpu.py` 和 `benchmarks/plot_server_cpu_gpu.py` 分别绘制两台机器的平台图；运行脚本并传入 `--help` 可查看参数。`benchmarks/benchmark_cpu_gpu.py` 可测量合成数据，也可输入一对 `(N, 3)` `.npy` 电场。`benchmarks/benchmark_server_cpu_gpu.py` 需要一对电场，并通过 `--existing-cupy-source` 指定原始 CuPy 基准源码；参数详见 `--help`。真实头模型电场不包含在仓库中。
+`benchmarks/plot_cpu_gpu.py` 和 `benchmarks/plot_server_cpu_gpu.py` 分别绘制两台机器的平台图；运行脚本并传入 `--help`
+可查看参数。`benchmarks/benchmark_cpu_gpu.py` 可测量合成数据，也可输入一对 `(N, 3)` `.npy`
+电场。`benchmarks/benchmark_server_cpu_gpu.py` 需要一对电场，并通过 `--existing-cupy-source` 指定原始 CuPy 基准源码；参数详见
+`--help`。真实头模型电场不包含在仓库中。
